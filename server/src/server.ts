@@ -4,12 +4,14 @@ import morgan from "morgan";
 import { AppDataSource } from "./data-source";
 import authRoutes from "./routes/auth"
 import cors from "cors";
+import dotenv from "dotenv";
 
 const app = express();
 const origin = "http://localhost:3000";
 
 app.use(cors({
-    origin
+    origin,
+    credentials: true
 }));
 app.use(express.json());
 /**
@@ -19,6 +21,9 @@ app.use(express.json());
  *  - tiny
  */
 app.use(morgan("dev"));
+
+dotenv.config();
+
 // app.get의 url로 접속 시 해당 블록 코드 실행
 // Controller
 app.get("/", (_, res) => res.send("running"));
