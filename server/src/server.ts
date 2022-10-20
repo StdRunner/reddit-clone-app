@@ -2,7 +2,8 @@
 import express from "express";
 import morgan from "morgan";
 import { AppDataSource } from "./data-source";
-import authRoutes from "./routes/auth"
+import authRoutes from "./routes/auth";
+import subRoutes from "./routes/subs";
 import cors from "cors";
 import dotenv from "dotenv";
 
@@ -28,6 +29,7 @@ dotenv.config();
 // Controller
 app.get("/", (_, res) => res.send("running"));
 app.use("/api/auth", authRoutes)
+app.use("/api/subs", subRoutes)
 
 let port = 5000;
 // app.listen의 포트로 접속하면 해당 블록 코드 실행
