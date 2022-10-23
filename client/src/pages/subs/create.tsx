@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { FormEvent, useState } from 'react'
 import InputGroup from '../../components/InputGroup'
@@ -19,7 +20,7 @@ const SubCreate = () => {
             router.push(`/r/${res.data.name}`);
         } catch (error: any) {
             console.log(error);
-            setErrors(error.reponse.data)
+            setErrors(error.response.data)
         }
     }
     
@@ -81,3 +82,23 @@ const SubCreate = () => {
 }
 
 export default SubCreate
+
+// 서버 사이드 렌더링으로 서버 요청 시 데이터를 불러온다
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    try {
+        const cookie = req.headers.cookie;
+        
+        // 쿠키가 없다면 에러 보내기
+        if(!cookie) throw new Error("Missing auth token cookie");
+
+        // 쿠키가 있다면 그 쿠키를 이용하여 백엔드에서 인증 처리하기
+        await axios.get("/auth/me", { headers: { cookie } })
+
+        return { props: {} }
+        
+    } catch (error) {
+        // 요청에서 던져준 쿠키를 이용해 백엔드에서 인증 처리할 때 에러가 나면 /login 페이지로 이동
+        res.writeHead(307, { Location: "/login" }).end()
+        return { props: {} };
+    }
+}

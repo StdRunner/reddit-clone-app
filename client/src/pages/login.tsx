@@ -3,14 +3,17 @@ import Link from 'next/link';
 import router from 'next/router';
 import React, { FormEvent, useState } from 'react'
 import InputGroup from '../components/InputGroup'
-import { useAuthDispatch } from '../context/auth';
+import { useAuthDispatch, useAuthState } from '../context/auth';
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<any>({});
-
+    const {authenticated} = useAuthState();
     const dispatch = useAuthDispatch();
+
+    // 이미 로그인된 사람일 경우 / 페이지로 이동
+    if(authenticated) router.push("/");
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
