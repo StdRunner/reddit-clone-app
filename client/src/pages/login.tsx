@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Link from 'next/link';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import React, { FormEvent, useState } from 'react'
 import InputGroup from '../components/InputGroup'
 import { useAuthDispatch, useAuthState } from '../context/auth';
@@ -13,6 +13,7 @@ const Login = () => {
     const dispatch = useAuthDispatch();
 
     // 이미 로그인된 사람일 경우 / 페이지로 이동
+    let router = useRouter();
     if(authenticated) router.push("/");
 
     const handleSubmit = async (event: FormEvent) => {
