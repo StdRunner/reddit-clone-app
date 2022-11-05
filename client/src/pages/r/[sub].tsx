@@ -1,10 +1,14 @@
 import axios from 'axios'
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import React from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
+import { useAuthState } from '../../context/auth';
 
 const SubPage = () => {
+    const [ownSub, setOwnSub] = useState(false);
+    const { authenticated, user } = useAuthState();
+
     const fetcher = async (url: string) => {
         try {
             const res = await axios.get(url);
@@ -14,10 +18,45 @@ const SubPage = () => {
         }
     }
     
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const subName = router.query.sub;
     const {data: sub, error} = useSWR(subName ? `/subs/${subName}` : null, fetcher);
     console.log('sub', sub);
+
+    useEffect(() => {
+        if(!sub || !user) return;
+        setOwnSub(authenticated && user.username === sub.username);
+    }, [sub])
+
+    const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
+        if(event.target.files === null) return;
+
+        const file = event.target.files[0];
+        console.log('file', file);
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("type", fileInputRef.current!.name);
+
+        try {
+            await axios.post(`/subs/${sub.name}/upload`, formData, {
+                headers: {"Context-Type": "multipart/form-data"}
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
+    const openFileInput = (type: string) => {
+        if(!ownSub) return;
+
+        const fileInput = fileInputRef.current;
+        if(fileInput) {
+            fileInput.name = type;
+            fileInput.click();
+        }
+    }
 
     return (
         /**
@@ -28,6 +67,13 @@ const SubPage = () => {
         {sub && 
             <>
                 <div>
+                    <input 
+                        type="file" 
+                        hidden={true} 
+                        ref={fileInputRef} 
+                        onChange={uploadImage}
+                    />
+
                     {/* 배너 이미지 */}
                     <div className='bg-gray-400'>
                     {sub.bannerUrl ? (
@@ -39,10 +85,13 @@ const SubPage = () => {
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                             }}
+                            onClick={() => openFileInput("banner")}
                         >
                         </div>
                     ) : (
-                        <div className='h-20 bg-gray-400'></div>
+                        <div className='h-20 bg-gray-400'
+                            onClick={() => openFileInput("banner")}
+                        ></div>
                     )}
                     </div>
                     {/* 커뮤니티 메타 데이터 */}
@@ -57,6 +106,7 @@ const SubPage = () => {
                                         width={70}
                                         height={70}
                                         className='rounded-full'
+                                        onClick={() => openFileInput("image")}
                                     />
                                 )
                             }
