@@ -33,6 +33,8 @@ app.get("/", (_, res) => res.send("running"));
 app.use("/api/auth", authRoutes)
 app.use("/api/subs", subRoutes)
 
+app.use(express.static("public"));
+
 let port = 5000;
 // app.listen의 포트로 접속하면 해당 블록 코드 실행
 app.listen(port, async () => {
