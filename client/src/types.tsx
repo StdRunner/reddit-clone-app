@@ -23,7 +23,7 @@ export interface Sub {
 
 export interface Post {
     identifier: string;
-    slub: string;
+    slug: string;
     body: string;
     subName: string;
     username: string;
