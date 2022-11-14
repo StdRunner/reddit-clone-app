@@ -8,12 +8,8 @@ import { Sub } from '../types';
 
 const Home: NextPage = () => {
   const { authenticated } = useAuthState();
-
-  const fetcher = async (url: string) => {
-    return await axios.get(url).then(res => res.data);
-  }
   const address = "http://localhost:5000/api/subs/sub/topSubs";
-  const { data: topSubs } = useSWR<Sub[]>(address, fetcher)
+  const { data: topSubs } = useSWR<Sub[]>(address)
 
   return (
     <div className='flex max-w-5xl px-4 pt-5 mx-auth'>
