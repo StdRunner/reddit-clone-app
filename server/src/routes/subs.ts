@@ -86,15 +86,10 @@ const createSub = async (req: Request, res: Response, next) => {
 
 const topSubs = async (_:Request, res:Response) => {
     try {
-        // const imageUrlExp = `COALESCE(s."imageUrn", 'http://www.gravatar.com/avatar?d=mp&f=y')`;
+        const imageUrlExp = `COALESCE('${process.env.APP_URL}/images/'|| s."imageUrn", 'http://www.gravatar.com/avatar?d=mp&f=y')`;
         const subs = await AppDataSource
             .createQueryBuilder()
-            // .select(`s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`)
-            .select(`s.title, s.name, 
-                CASE WHEN s."imageUrn" IS NULL THEN 'http://www.gravatar.com/avatar?d=mp&f=y'
-                    ELSE '${process.env.APP_URL}/images/' || s."imageUrn"
-                END as "imageUrl", count(p.id) as "postCount"`
-            )
+            .select(`s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`)
             .from(Sub, "s")
             .leftJoin(Post, "p", `s.name = p."subName"`)
             .groupBy('s.title, s.name, "imageUrl"')
