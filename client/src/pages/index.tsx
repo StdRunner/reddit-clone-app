@@ -12,7 +12,7 @@ const Home: NextPage = () => {
   const { data: topSubs } = useSWR<Sub[]>(address)
 
   return (
-    <div className='flex max-w-5xl px-4 pt-5 mx-auth'>
+    <div className='flex max-w-5xl px-4 pt-5 mx-auto'>
       {/* 포스트 리스트 */}
       <div className='w-full md:mr-3 md:w-8/12'></div>
 
