@@ -15,7 +15,7 @@ const app = express();
 const origin = process.env.ORIGIN;
 
 app.use(cors({
-    origin,
+    origin: `http://ec2-3-86-23-163.compute-1.amazonaws.com:3000`,
     credentials: true
 }));
 app.use(express.json());
