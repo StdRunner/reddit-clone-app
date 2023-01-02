@@ -12,7 +12,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
 const app = express();
-const origin = "http://localhost:3000";
+const origin = process.env.ORIGIN;
 
 app.use(cors({
     origin,
@@ -44,7 +44,7 @@ app.use(express.static("public"));
 let port = 5000;
 // app.listen의 포트로 접속하면 해당 블록 코드 실행
 app.listen(port, async () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at ${process.env.APP_URL}`);
 
     AppDataSource.initialize().then(async () => {
         console.log("database initialize")
