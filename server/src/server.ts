@@ -13,7 +13,6 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 const origin = process.env.ORIGIN;
-console.log('origin', origin);
 
 app.use(cors({
     origin: `http://ec2-3-86-23-163.compute-1.amazonaws.com:3000`,
